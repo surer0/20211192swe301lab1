@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deposit - InfoSuper Bank</title>
+  <style>
+    /* Temel stil ayarları */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #add8e6;
+      color: #fff;
+      background-image: radial-gradient(circle at top, #add8e6, #add8e6);
+      overflow: hidden;
+    }
+
+    /* ATM Konteyneri */
+    .atm-container {
+      background: linear-gradient(145deg, #ffffff, #e0e0e0);
+      border-radius: 30px;
+      padding: 50px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2), inset 0 4px 8px rgba(255, 255, 255, 0.1);
+      width: 480px;
+      text-align: center;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Exit Butonu */
+    .exit-btn {
+      position: absolute;
+      left: -80px;
+      background: #000;
+      color: #fff;
+      font-weight: bold;
+      padding: 15px 20px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    }
+
+    .exit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
+    }
+
+    /* ATM Ekranı */
+    .screen {
+      background: rgba(0, 0, 0, 0.8);
+      border: 5px solid #add8e6;
+      border-radius: 15px;
+      height: 250px;
+      width: 95%;
+      margin: 0 auto 30px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 1em;
+      color: #add8e6;
+      padding: 20px;
+      text-align: center;
+      box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.6), 0 6px 12px rgba(0, 255, 255, 0.2);
+      text-shadow: 1px 1px 3px rgba(0, 255, 255, 0.5);
+      position: relative;
+    }
+
+    .welcome-message {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+
+    /* Alan */
+    .amount-display {
+      font-size: 1.5em;
+      color: #fff;
+      margin-bottom: 15px;
+    }
+
+    /* Rakam ve İşlem Butonları */
+    .button-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .button {
+      padding: 15px;
+      font-size: 1.2em;
+      border-radius: 15px;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(145deg, #009dff, #007acc);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease-in-out;
+      position: relative;
+      text-align: center;
+    }
+
+    .button:hover {
+      background: linear-gradient(145deg, #007acc, #005b99);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .enter {
+      background: linear-gradient(145deg, #2ca85a, #1e6f38);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .enter:hover {
+      background: linear-gradient(145deg, #1e6f38, #1c6032);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0, 255, 0, 0.3);
+    }
+
+    .delete {
+      background: linear-gradient(145deg, #d2454b, #991a20);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .delete:hover {
+      background: linear-gradient(145deg, #991a20, #7a1418);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(255, 0, 0, 0.3);
+    }
+
+    .delete:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .receipt {
+      font-size: 1em;
+      color: #fff;
+      margin-top: 15px;
+      text-align: left;
+    }
+
+    .receipt-button-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .receipt-button {
+      padding: 10px 20px;
+      font-size: 1em;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(145deg, #009dff, #007acc);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .receipt-button:hover {
+      background: linear-gradient(145deg, #007acc, #005b99);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+<div class="atm-container">
+  <!-- Exit Butonu -->
+  <button class="exit-btn" onclick="exitATM()">Exit</button>
+  
+  <!-- ATM Ekranı -->
+  <div class="screen" id="screen">
+    <div class="welcome-message">Enter the amount you want to deposit</div>
+    <div class="amount-display" id="amountDisplay">$0.00</div>
+  </div>
+
+  <!-- Rakam Butonları ve İşlem Butonları -->
+  <div class="button-container" id="buttonContainer">
+    <button class="button" onclick="appendNumber(1)">1</button>
+    <button class="button" onclick="appendNumber(2)">2</button>
+    <button class="button" onclick="appendNumber(3)">3</button>
+    <button class="button" onclick="appendNumber(4)">4</button>
+    <button class="button" onclick="appendNumber(5)">5</button>
+    <button class="button" onclick="appendNumber(6)">6</button>
+    <button class="button" onclick="appendNumber(7)">7</button>
+    <button class="button" onclick="appendNumber(8)">8</button>
+    <button class="button" onclick="appendNumber(9)">9</button>
+
+    <!-- DELETE, 0 ve ENTER butonları -->
+    <button class="button delete" id="deleteBtn" onclick="deleteNumber()">DELETE</button>
+    <button class="button" onclick="appendNumber(0)">0</button>
+    <button class="button enter" onclick="depositAmount()">ENTER</button>
+  </div>
+</div>
+
+<script>
+  // Girilen miktarı göstermek için alan
+  let currentAmount = "";
+
+  // Kullanıcının girdiği miktarı ekrana ekleme ve gösterme
+  function appendNumber(number) {
+    currentAmount += number;
+    updateAmountDisplay();
+  }
+
+  // Girdi silme işlemi
+  function deleteNumber() {
+    if (currentAmount.length > 0) {
+      currentAmount = currentAmount.slice(0, -1);
+      updateAmountDisplay();
+    }
+  }
+
+  // Girilen miktar alanını güncelleme
+  function updateAmountDisplay() {
+    const amountDisplay = document.getElementById('amountDisplay');
+    amountDisplay.innerText = `$${parseFloat(currentAmount || "0").toFixed(2)}`;
+  }
+
+  // Para yatırma işlemi
+  function depositAmount() {
+    const depositAmount = parseFloat(currentAmount);
+    if (!isNaN(depositAmount) && depositAmount > 0) {
+      let currentBalance = parseFloat(localStorage.getItem('balance')) || 0;
+      currentBalance += depositAmount;
+      localStorage.setItem('balance', currentBalance);
+      
+      // Kullanıcıya makbuz isteyip istemediğini sor
+      document.getElementById('screen').innerHTML = `
+        <div class="welcome-message">Would you like a receipt?</div>
+        <div class="receipt-button-container">
+          <button class="receipt-button" onclick="showReceipt(${depositAmount}, ${currentBalance})">Yes</button>
+          <button class="receipt-button" onclick="redirectToHome()">No</button>
+        </div>
+      `;
+    } else {
+      alert('Please enter a valid amount.');
+      currentAmount = "";
+      updateAmountDisplay();
+    }
+  }
+
+  // Makbuzu göster
+  function showReceipt(depositAmount, currentBalance) {
+    document.getElementById('screen').innerHTML = `
+      <div class="welcome-message">Receipt</div>
+      <div class="receipt">
+        <p>Deposited Amount: $${depositAmount.toFixed(2)}</p>
+        <p>Current Balance: $${currentBalance.toFixed(2)}</p>
+      </div>
+    `;
+  }
+
+  // Home sayfasına yönlendir
+  function redirectToHome() {
+    window.location.href = 'home.html';
+  }
+
+  // Exit butonu işlemi (home.html yönlendirmesi)
+  function exitATM() {
+    window.location.href = "home.html";
+  }
+</script>
+
+</body>
+</html>

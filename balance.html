@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check Balance - InfoSuper Bank</title>
+  <style>
+    /* Temel stil ayarları */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #add8e6;
+      color: #fff;
+      background-image: radial-gradient(circle at top, #add8e6, #add8e6);
+      overflow: hidden;
+    }
+
+    /* ATM Konteyneri */
+    .atm-container {
+      background: linear-gradient(145deg, #ffffff, #e0e0e0);
+      border-radius: 30px;
+      padding: 50px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2), inset 0 4px 8px rgba(255, 255, 255, 0.1);
+      width: 480px;
+      text-align: center;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Exit Butonu */
+    .exit-btn {
+      position: absolute;
+      left: -80px;
+      background: #000;
+      color: #fff;
+      font-weight: bold;
+      padding: 15px 20px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    }
+
+    .exit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
+    }
+
+    /* ATM Ekranı */
+    .screen {
+      background: rgba(0, 0, 0, 0.8);
+      border: 5px solid #add8e6;
+      border-radius: 15px;
+      height: 250px;
+      width: 95%;
+      margin: 0 auto 30px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 1em;
+      color: #add8e6;
+      padding: 20px;
+      text-align: center;
+      box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.6), 0 6px 12px rgba(0, 255, 255, 0.2);
+      text-shadow: 1px 1px 3px rgba(0, 255, 255, 0.5);
+      position: relative;
+    }
+
+    .balance-display {
+      font-size: 1.5em;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    /* Rakam ve İşlem Butonları */
+    .button-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .button {
+      padding: 15px;
+      font-size: 1.2em;
+      border-radius: 15px;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(145deg, #009dff, #007acc);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease-in-out;
+      position: relative;
+      text-align: center;
+    }
+
+    .button:hover {
+      background: linear-gradient(145deg, #007acc, #005b99);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .enter {
+      background: linear-gradient(145deg, #2ca85a, #1e6f38);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .enter:hover {
+      background: linear-gradient(145deg, #1e6f38, #1c6032);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0, 255, 0, 0.3);
+    }
+
+    .delete {
+      background: linear-gradient(145deg, #d2454b, #991a20);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .delete:hover {
+      background: linear-gradient(145deg, #991a20, #7a1418);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(255, 0, 0, 0.3);
+    }
+
+    .delete:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+<div class="atm-container">
+  <!-- Exit Butonu -->
+  <button class="exit-btn" onclick="exitATM()">Exit</button>
+  
+  <!-- ATM Ekranı -->
+  <div class="screen">
+    <div class="welcome-message">Your Current Balance</div>
+    <div class="balance-display" id="balanceDisplay">$0.00</div>
+  </div>
+
+  <!-- Rakam Butonları ve İşlem Butonları -->
+  <div class="button-container">
+    <button class="button">1</button>
+    <button class="button">2</button>
+    <button class="button">3</button>
+    <button class="button">4</button>
+    <button class="button">5</button>
+    <button class="button">6</button>
+    <button class="button">7</button>
+    <button class="button">8</button>
+    <button class="button">9</button>
+
+    <!-- DELETE, 0 ve ENTER butonları -->
+    <button class="button delete">DELETE</button>
+    <button class="button">0</button>
+    <button class="button enter">ENTER</button>
+  </div>
+</div>
+
+<script>
+  // Mevcut bakiyeyi göster
+  function displayBalance() {
+    const balanceDisplay = document.getElementById('balanceDisplay');
+    const currentBalance = parseFloat(localStorage.getItem('balance')) || 0;
+    balanceDisplay.innerText = `$${currentBalance.toFixed(2)}`;
+  }
+
+  // Sayfa yüklendiğinde mevcut bakiyeyi göster
+  window.onload = displayBalance;
+
+  // Exit butonu işlemi (home.html yönlendirmesi)
+  function exitATM() {
+    window.location.href = "home.html";
+  }
+</script>
+
+</body>
+</html>

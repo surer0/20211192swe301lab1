@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATM Simulator - InfoSuper Bank</title>
+  <style>
+    /* Temel stil ayarları */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #add8e6;
+      color: #fff;
+      background-image: radial-gradient(circle at top, #add8e6, #add8e6);
+      overflow: hidden;
+    }
+
+    /* ATM Konteyneri */
+    .atm-container {
+      background: linear-gradient(145deg, #ffffff, #e0e0e0);
+      border-radius: 30px;
+      padding: 50px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2), inset 0 4px 8px rgba(255, 255, 255, 0.1);
+      width: 480px;
+      text-align: center;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Insert Card Butonu */
+    .insert-card-btn {
+      position: absolute;
+      left: -80px;
+      background: #000;
+      color: #fff;
+      font-weight: bold;
+      padding: 15px 20px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    }
+
+    .insert-card-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
+    }
+
+    /* ATM Ekranı */
+    .screen {
+      background: rgba(0, 0, 0, 0.8);
+      border: 5px solid #add8e6;
+      border-radius: 15px;
+      height: 200px;
+      width: 95%;
+      margin: 0 auto 30px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5em;
+      color: #add8e6;
+      padding: 20px;
+      text-align: center;
+      box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.6), 0 6px 12px rgba(0, 255, 255, 0.2);
+      text-shadow: 1px 1px 3px rgba(0, 255, 255, 0.5);
+      position: relative;
+    }
+
+    /* Banka Logo */
+    .screen img {
+      width: 50px;
+      height: 50px;
+      vertical-align: middle;
+      margin-left: 10px;
+    }
+
+    /* Rakam ve İşlem Butonları */
+    .button-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .button {
+      padding: 20px;
+      font-size: 1.3em;
+      border-radius: 15px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    /* Rakam butonları */
+    .number {
+      background-color: #009dff;
+      color: #fff;
+    }
+
+    .number:hover {
+      background-color: #007acc;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ENTER ve DELETE butonları */
+    .enter {
+      background: linear-gradient(145deg, #2ca85a, #1e6f38);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .enter:hover {
+      background-color: #28a745;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0, 255, 0, 0.3);
+    }
+
+    .delete {
+      background: linear-gradient(145deg, #d2454b, #991a20);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .delete:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+<div class="atm-container">
+  <!-- Insert Card Butonu -->
+  <button class="insert-card-btn" onclick="insertCard()">Insert Card</button>
+  
+  <!-- ATM Ekranı -->
+  <div class="screen" id="screen">
+    Welcome to InfoSuper Bank <img src="amblem.png" alt="Bank Logo">
+  </div>
+  
+  <!-- Butonlar -->
+  <div class="button-container">
+    <button class="button number" onclick="appendNumber(1)">1</button>
+    <button class="button number" onclick="appendNumber(2)">2</button>
+    <button class="button number" onclick="appendNumber(3)">3</button>
+    <button class="button number" onclick="appendNumber(4)">4</button>
+    <button class="button number" onclick="appendNumber(5)">5</button>
+    <button class="button number" onclick="appendNumber(6)">6</button>
+    <button class="button number" onclick="appendNumber(7)">7</button>
+    <button class="button number" onclick="appendNumber(8)">8</button>
+    <button class="button number" onclick="appendNumber(9)">9</button>
+
+    <!-- DELETE, 0 ve ENTER butonları -->
+    <button class="button delete" id="deleteBtn" onclick="deleteNumber()">DELETE</button>
+    <button class="button number" onclick="appendNumber(0)">0</button>
+    <button class="button enter" onclick="enter()">ENTER</button>
+  </div>
+</div>
+
+<script>
+  // Varsayılan PIN kodu
+  const defaultPin = "3534";
+  let cardInserted = false; // Kartın takılı olup olmadığını takip eder
+
+  // Delete butonu referansı
+  const deleteBtn = document.getElementById('deleteBtn');
+
+  // Insert Card işlemi
+  function insertCard() {
+    const screen = document.getElementById('screen');
+    screen.innerHTML = 'System is recognizing your card...';
+    setTimeout(() => {
+      screen.innerHTML = 'Please enter your 4-digit PIN.';
+      cardInserted = true; // Kart takıldıktan sonra aktif hale getir
+    }, 2000); // 2 saniye
+  }
+
+  // Kart takılı değilken tuşları engelle
+  function appendNumber(number) {
+    if (!cardInserted) return; // Kart takılı değilse işlemi sonlandır
+    const screen = document.getElementById('screen');
+    if (screen.innerText.includes("Please enter your 4-digit PIN") || screen.innerText.includes("Incorrect PIN")) {
+      screen.innerText = '';
+    }
+    screen.innerText += number;
+    deleteBtn.disabled = false; // Delete butonunu aktif hale getir
+  }
+
+  function deleteNumber() {
+    if (!cardInserted) return; // Kart takılı değilse işlemi sonlandır
+    const screen = document.getElementById('screen');
+    if (screen.innerText !== '' && screen.innerText !== 'Please enter your 4-digit PIN') {
+      screen.innerText = screen.innerText.slice(0, -1);
+    }
+  }
+
+  function enter() {
+    if (!cardInserted) return; // Kart takılı değilse işlemi sonlandır
+    const screen = document.getElementById('screen');
+    const enteredPin = screen.innerText;
+
+    if (enteredPin === defaultPin) {
+      alert('Access Granted!');
+      localStorage.setItem('lastAccess', new Date().toLocaleString());
+      window.location.href = "home.html"; // home.html sayfasına yönlendirme
+    } else {
+      alert('Incorrect PIN. Please try again.');
+      localStorage.setItem('failedAttempt', (parseInt(localStorage.getItem('failedAttempt')) || 0) + 1);
+      screen.innerText = 'Incorrect PIN, try again';
+    }
+  }
+</script>
+
+</body>
+</html>
